@@ -19,7 +19,7 @@ def home(request):
             api = "Error..."
         return render(request, 'home.html', {'api': api})
     else:
-        return render(request, 'home.html', {'ticker': "Enter a ticker symbol above..."})
+        return render(request, 'home.html', {'ticker': ""})
 
 
 def about(request):

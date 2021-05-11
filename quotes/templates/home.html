@@ -1,24 +1,116 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
+{% load static %}
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Welcome to Rui Yang's website!</h1>
+    <p class="lead">Search stocks you want. We will find more.</p>
+  </div>
+</div>
+<br>
 {% if ticker %}
     {{ ticker }}
 {% endif %}
 
 {% if api %}
     {% if api == "Error..." %}
-        There was a problem with ticker symbol,
-        please try again...
+        <p class="lead">There was a problem with ticker symbol,
+            please try again...</p>
     {% else %}
 
-        <h1>{{ api.companyName }}</h1><br/>
-        Price: ${{ api.latestPrice }}<br/>
-        Previous Close: ${{ api.previousClose }}<br/>
-        Market Cap: ${{ api.marketCap }}<br/>
-        YTD Change: ${{ api.ytdChange }}<br/>
-        52WK High: ${{ api.week52High }}<br/>
-        52WK Low: ${{ api.week52Low }}<br/>
+            <h1>{{ api.companyName }}</h1><br/>
+            Price: ${{ api.latestPrice }}<br/>
+            Previous Close: ${{ api.previousClose }}<br/>
+            Market Cap: ${{ api.marketCap }}<br/>
+            YTD Change: ${{ api.ytdChange }}<br/>
+            52WK High: ${{ api.week52High }}<br/>
+            52WK Low: ${{ api.week52Low }}<br/>
 
+            <br>
+            <div class="card pull-right" style="width: 80rem;">
+              <div class="card-body">
+                <p class="card-text" style="font-weight: bolder">Tip: The stock market is risky, investment needs to be cautious!</p>
+              </div>
+            </div>
+
+    <style>
+        .box{
+            width:1000px;
+            height:600px;
+            background-color: white;
+        }
+    </style>
+    <div class="box"></div>
+    <script src="{% static 'js/echarts.min.js'%}"></script>
+    <script>
+        var myChart = echarts.init(document.querySelector(".box"));
+        var chartDom = document.getElementById('.box');
+        var option;
+
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['Stock Price', 'Previous Close', '52WK High', '52WK Low'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '',
+                    type: 'bar',
+                    barWidth: '40%',
+                    data: [{{ api.latestPrice }}, {{ api.previousClose }}, {{ api.week52High }}, {{ api.week52Low }}]
+                },
+                {
+                    type: 'line',
+                    data: [{{ api.latestPrice }}, {{ api.previousClose }}]
+                },
+                {
+                    type: 'line',
+                    data: [{{ null }}, {{ null }}, {{ api.week52High }}, {{ api.week52Low }}]
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
+    </script>
+<br>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Enter your comments or advice" aria-label="Recipient's username" aria-describedby="basic-addon2">
+    <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2">Save</span>
+    </div>
+    </div>
     {% endif %}
 {% endif %}
 
